@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { DriveController } from "./DriveController";
+import { Loader } from "./Loader";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+enum GameState {
+  Intro,
+  LoadingError,
+  Driving,
 }
+export function App() {
+  const [loaderState, setLoaderState] = React.useState(GameState.Intro);
+  const [loadingError, setLoadingError] = React.useState<string | null>(null);
+  const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
-export default App;
+  const onStart = (ws: WebSocket): void => {
+    setLoaderState(GameState.Driving);
+    setWebSocket(ws);
+  };
+  const onError = (message: string): void => {
+    setLoaderState(GameState.LoadingError);
+    setLoadingError(message);
+  };
+  if (loaderState === GameState.Driving) {
+    return <DriveController webSocket={webSocket!}></DriveController>;
+  } else if (loaderState === GameState.LoadingError) {
+    return <div>{loadingError}</div>;
+  } else {
+    return <Loader onStart={onStart} onError={onError}></Loader>;
+  }
+}
