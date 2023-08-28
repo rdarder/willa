@@ -1,0 +1,9 @@
+namespace Willa.DriveController;
+
+enum MotorMode:byte { Idle = 0, Brake = 1, Forward = 2, Reverse = 3}
+
+table DriveControl {
+    steer: float;
+    motor_mode: MotorMode;
+    motor_power: float = 0;
+}
