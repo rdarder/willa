@@ -4,6 +4,10 @@
 #include <DNSServer.h>
 #include <LittleFS.h>
 
+#include "controller_reader.h"
+#undef ns
+#define ns(x) FLATBUFFERS_WRAP_NAMESPACE(Willa_DriveController, x) // Specified in the schema.
+
 const char *ssid = "willa";
 
 IPAddress local_IP(10, 0, 9, 1);
@@ -12,6 +16,7 @@ IPAddress subnet(255, 255, 255, 0);
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
+AsyncWebSocket ws("/controller");
 
 void listAllFilesInDir(String dir_path)
 {
@@ -35,6 +40,44 @@ void listAllFilesInDir(String dir_path)
   }
 }
 
+void handleWebSocketMessage(void *arg, uint8_t *data, size_t len)
+{
+  AwsFrameInfo *info = (AwsFrameInfo *)arg;
+  if (info->final && info->index == 0 && info->len == len && info->opcode == WS_BINARY)
+  {
+    ns(DriveControl_table_t) controller = ns(DriveControl_as_root(data));
+    float_t steer = ns(DriveControl_steer)(controller);
+    uint8_t motor_mode = ns(DriveControl_motor_mode)(controller);
+    float_t motor_power = ns(DriveControl_motor_power)(controller);
+    Serial.printf("Motor Mode: %d\n", motor_mode);
+    Serial.printf("Motor Power: %f\n", motor_power);
+    Serial.printf("Steering: %f\n", steer);
+  }
+}
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
+             void *arg, uint8_t *data, size_t len)
+{
+  switch (type)
+  {
+  case WS_EVT_CONNECT:
+    Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+    break;
+  case WS_EVT_DISCONNECT:
+    Serial.printf("WebSocket client #%u disconnected\n", client->id());
+    break;
+  case WS_EVT_DATA:
+    handleWebSocketMessage(arg, data, len);
+    break;
+  case WS_EVT_PONG:
+  case WS_EVT_ERROR:
+    break;
+  }
+}
+void initWebSocket()
+{
+  ws.onEvent(onEvent);
+  server.addHandler(&ws);
+}
 void setup()
 {
   // initialize digital pin LED_BUILTIN as an output.
@@ -59,6 +102,7 @@ void setup()
 
   server.onNotFound([](AsyncWebServerRequest *request)
                     { request->send(404); });
+  initWebSocket();
   server.begin();
 }
 
