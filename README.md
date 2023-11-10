@@ -30,5 +30,5 @@ This is not in sync with the current code (pin selection).
 
 ## Printable stl files
 
-Parts can be exported from onshape or you can find them already lined up for printing ![here](stl/)
+Parts can be exported from onshape or you can find them already lined up for printing [here](stl/)
 
