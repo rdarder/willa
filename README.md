@@ -9,18 +9,37 @@ The electronic components needed are quite cheap and easy to find.
 This is a public personal project and it's not well documented. Feel free to file an issue if you need help making one yourself!
 
 
-![The 3d model's exterior view](docs/perspective.png)
+###Some pictures of the 3d model
 
-![Front](docs/front.png)
+![The 3d model's exterior view](media/perspective.png)
 
-![Back](docs/back.png)
+![Front](media/front.png)
 
-![Side](docs/right.png)
+![Back](media/back.png)
 
-![Without the lid](docs/interior.png)
+![Side](media/right.png)
+
+![Without the lid](media/interior.png)
+
+### Breadboard and components
+
+This is not in sync with the current code (pin selection).
+
+![Breadboard and components -- not in sync with the current code](media/breadboard.png)
 
 
-![Breadboard and components -- not in sync with the current code](docs/breadboard.png)
+## Printable stl files
+
+Most of the car parts. Note that the steering have in-place hinges, so they must be printed in their exact relative positions. Parts don't need support. 
+
+![](stl/internals-rigid.stl)
+
+The top part involves very long bridges, so the interior may have rough layers. It doesn't affect how it looks and adding supports doesn't help much. 
+
+![](stl/top.stl)
+
+These parts should be printed in TPU or other flexible material. 
+![](stl/soft-material.stl)
 
 
 
