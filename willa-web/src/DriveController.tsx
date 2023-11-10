@@ -27,7 +27,7 @@ export class DriveController extends React.Component<
   }
   componentDidMount(): void {
     this.setState({
-      commandSendLoop: window.setInterval(this.sendCommand, 1000),
+      commandSendLoop: window.setInterval(this.sendCommand, 100),
     });
   }
 

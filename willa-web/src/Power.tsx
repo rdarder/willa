@@ -39,8 +39,8 @@ interface UnknownTouchArea {
 type PowerArea = BreakTouchArea | ActiveTouchArea | UnknownTouchArea;
 
 export class MotorController extends React.Component<PowerProps, {}> {
-  BREAK_AREA = 0.3;
-  MAX_OUT_AREA = 0.2;
+  BREAK_AREA = 0.2;
+  OUT_AREA = 0.05;
   constructor(props: PowerProps) {
     super(props);
     this.state = {};
